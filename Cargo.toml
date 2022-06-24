@@ -1,0 +1,18 @@
+[package]
+name = "sos"
+version = "0.1.0"
+authors = ["Stephen Marz <stephen.marz@utk.edu>"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["staticlib"]
+
+[dependencies]
+tock-registers={ version="0.7.0", features=["register_types"] }
+
+[profile.dev]
+panic="abort"
+
+[profile.release]
+panic="abort"
