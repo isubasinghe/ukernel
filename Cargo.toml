@@ -1,7 +1,7 @@
 [package]
-name = "sos"
+name = "ukernel"
 version = "0.1.0"
-authors = ["Stephen Marz <stephen.marz@utk.edu>"]
+authors = ["Isitha Subasinghe"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

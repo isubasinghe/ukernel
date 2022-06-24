@@ -1,6 +1,3 @@
-// Steve Operating System
-// Stephen Marz
-// 21 Sep 2019
 #![no_std]
 #![no_main]
 #![feature(panic_info_message, lang_items)]

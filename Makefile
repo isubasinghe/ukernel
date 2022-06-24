@@ -11,7 +11,7 @@ TYPE=debug
 RUST_TARGET=./target/riscv64_soft_float/$(TYPE)
 LIBS=-L$(RUST_TARGET)
 SOURCES_ASM=$(wildcard src/asm/*.S)
-LIB=-lsos -lgcc
+LIB=-lukernel -lgcc
 OUT=os.elf
 
 #####
