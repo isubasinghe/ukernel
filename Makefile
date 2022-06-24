@@ -25,7 +25,7 @@ MEM=128M
 DRIVE=hdd.dsk
 
 all:
-	cargo build -Zbuild-std=core --target riscv64_soft_float.json 
+	cargo build
 	$(CC) $(CFLAGS) $(LINKER_SCRIPT) $(INCLUDES) -o $(OUT) $(SOURCES_ASM) $(LIBS) $(LIB)
 	
 run: all
