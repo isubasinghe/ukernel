@@ -1,1 +1,2 @@
-mod ns16550a; 
+pub mod ns16550a; 
+

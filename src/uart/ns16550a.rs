@@ -11,8 +11,13 @@ use spin::Mutex;
 
 const UART_BASE: StaticRef<Registers> = unsafe { StaticRef::new(0x1000_0000 as *const Registers) };
 
-lazy_static! {
 
+lazy_static! {
+    pub static ref UART: Mutex<UartNS16550a> = {
+       let uart = Mutex::new(UartNS16550a { reg: UART_BASE });
+       uart.lock().init();
+       uart
+    };
 }
 
 register_structs! {
@@ -98,34 +103,37 @@ register_bitfields![u8,
     ]
 ];
 
-pub fn init() {
-    // enable 8 bits
-    UART_BASE.lcr.write(LCR::WLS0::SET + LCR::WLS1::SET);
-    // enable FIFO (obvious isn't it?)
-    UART_BASE.fcr.write(FCR::FIFO_ENABLE::SET);
-    // enable receive buffer interrupts
-    UART_BASE.ier.write(IER::ERBFI::SET);
-
-    // time to set the rate
-    let divisor: u16 = 592;
-    let divisor_least: u8 = (divisor & 0xff) as u8;
-    let divisor_most: u8 = (divisor >> 8) as u8;
-
-    // setting DLAB
-    UART_BASE
-        .lcr
-        .write(LCR::WLS0::SET + LCR::WLS1::SET + LCR::DIV_LATCH_ACCESS::SET);
-
-    UART_BASE.dll.set(divisor_least);
-    UART_BASE.dlm.set(divisor_most);
-
-    UART_BASE.lcr.write(LCR::WLS0::SET + LCR::WLS1::SET);
-}
-
-
 pub struct UartNS16550a {
-    reg: Registers, 
+    reg: StaticRef<Registers>,
 }
+
+impl UartNS16550a {
+    fn init(&mut self) {
+        self.reg.lcr.write(LCR::WLS0::SET + LCR::WLS1::SET);
+        // enable FIFO (obvious isn't it?)
+        self.reg.fcr.write(FCR::FIFO_ENABLE::SET);
+        // enable receive buffer interrupts
+        self.reg.ier.write(IER::ERBFI::SET);
+
+        // time to set the rate
+        let divisor: u16 = 592;
+        let divisor_least: u8 = (divisor & 0xff) as u8;
+        let divisor_most: u8 = (divisor >> 8) as u8;
+
+        // setting DLAB
+        self.reg
+            .lcr
+            .write(LCR::WLS0::SET + LCR::WLS1::SET + LCR::DIV_LATCH_ACCESS::SET);
+
+        self.reg.dll.set(divisor_least);
+        self.reg.dlm.set(divisor_most);
+
+        self.reg.lcr.write(LCR::WLS0::SET + LCR::WLS1::SET);
+    }
+}
+
+unsafe impl Send for UartNS16550a {}
+unsafe impl Sync for UartNS16550a {}
 
 impl fmt::Write for UartNS16550a {
     fn write_str(&mut self, s: &str) -> core::fmt::Result {
@@ -153,3 +161,6 @@ impl Write for UartNS16550a {
        Ok(cnt)
     }  
 }
+
+
+

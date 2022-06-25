@@ -11,6 +11,8 @@ mod io;
 
 use core::arch::asm;
 
+use uart::ns16550a::UART;
+
 // ///////////////////////////////////
 // / RUST MACROS
 // ///////////////////////////////////
@@ -18,7 +20,9 @@ use core::arch::asm;
 macro_rules! print
 {
 	($($args:tt)+) => ({
-
+        use core::fmt::Write;
+        let _ = write!(UART.lock(), $($args)+);
+        
 	});
 }
 #[macro_export]
@@ -78,9 +82,7 @@ fn abort() -> ! {
 #[no_mangle]
 extern "C"
 fn kmain() {
-	// Main should initialize all sub-systems and get
-	// ready to start scheduling. The last thing this
-	// should do is start the timer.
+    println!("Hello World");
 }
 
 // ///////////////////////////////////
