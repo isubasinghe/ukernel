@@ -1,6 +1,6 @@
 use core::ops::{
     Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, Mul, Sub,
-    SubAssign, Rem, Shl, Shr
+    SubAssign, Rem, Shl, Shr, Not
 };
 
 use core::convert::{From, Into};
@@ -18,6 +18,7 @@ use derive_more::*;
     BitOrAssign,
     BitXor,
     BitXorAssign,
+    Not,
     Copy,
     Clone,
     Debug,
@@ -37,6 +38,7 @@ pub struct VirtAddress {
     BitOrAssign,
     BitXor,
     BitXorAssign,
+    Not,
     Copy,
     Clone,
     Debug,
@@ -46,24 +48,27 @@ pub struct PhysAddress {
 }
 
 pub trait MemoryAddress:
-    Add
+    Add<Output=Self>
     + AddAssign
-    + Sub
+    + Sub<Output=Self>
     + SubAssign
     + Mul 
     + Div
     + Rem
-    + Shl 
-    + Shr
-    + BitAnd
+    + Shl<Output=Self>
+    + Shr<Output=Self>
+    + BitAnd<Output=Self>
     + BitAndAssign
-    + BitOr
+    + BitOr<Output=Self>
     + BitOrAssign
-    + BitXor
+    + BitXor<Output=Self>
     + BitXorAssign
+    + Not<Output=Self>
     + From<usize>
     + Into<usize>
     + Sized
+    + Copy 
+    + Clone
 {
 }
 
