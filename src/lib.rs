@@ -8,6 +8,7 @@ extern crate lazy_static;
 mod uart;
 mod cells;
 mod io;
+mod memory;
 
 use core::arch::asm;
 
