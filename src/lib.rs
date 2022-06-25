@@ -3,8 +3,11 @@
 #![feature(panic_info_message, lang_items)]
 
 extern crate tock_registers;
+extern crate spin; 
+extern crate lazy_static;
 mod uart;
 mod cells;
+mod io;
 
 use core::arch::asm;
 
