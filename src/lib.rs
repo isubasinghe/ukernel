@@ -5,6 +5,8 @@
 extern crate tock_registers;
 extern crate spin; 
 extern crate lazy_static;
+extern crate derive_more;
+
 mod uart;
 mod cells;
 mod io;
