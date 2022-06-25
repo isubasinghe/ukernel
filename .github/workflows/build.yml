@@ -11,6 +11,7 @@ env:
 
 jobs:
   check:
+    runs-on: ubuntu-latest
     steps:
       - name: Rudra 
         uses: sslab-gatech/Rudra@master
