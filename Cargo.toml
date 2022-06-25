@@ -13,6 +13,7 @@ tock-registers={ version="0.7.0", features=["register_types"] }
 spin = "0.9.3"
 lazy_static = {version="1.4.0", features=["spin_no_std"] }
 derive_more = "0.99.17"
+riscv = "0.8.0"
 
 [profile.dev]
 panic="abort"
