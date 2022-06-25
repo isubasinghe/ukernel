@@ -12,7 +12,6 @@ mod memory;
 
 use core::arch::asm;
 
-use uart::ns16550a::UART;
 
 // ///////////////////////////////////
 // / RUST MACROS
@@ -22,7 +21,7 @@ macro_rules! print
 {
 	($($args:tt)+) => ({
         use core::fmt::Write;
-        let _ = write!(UART.lock(), $($args)+);
+        let _ = write!(crate::uart::Uart::new(0x1000_0000), $($args)+);
         
 	});
 }
@@ -82,8 +81,9 @@ fn abort() -> ! {
 // ///////////////////////////////////
 #[no_mangle]
 extern "C"
-fn kmain() {
+fn kmain() -> ! {
     println!("Hello World");
+    loop {}
 }
 
 // ///////////////////////////////////
