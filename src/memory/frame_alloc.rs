@@ -8,8 +8,12 @@ extern "C" {
     static HEAP_SIZE: usize;
 }
 
-pub fn align<T>(addr: T)
+pub fn align<T>(addr: T, order: usize)
 where
     T: MemoryAddress,
 {
+    let x:T = 1.into();
+    let order:T = order.into();
+
+    let val = x << order;
 }

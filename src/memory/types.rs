@@ -1,6 +1,6 @@
 use core::ops::{
     Add, AddAssign, BitAnd, BitAndAssign, BitOr, BitOrAssign, BitXor, BitXorAssign, Div, Mul, Sub,
-    SubAssign, Rem
+    SubAssign, Rem, Shl, Shr
 };
 
 use core::convert::{From, Into};
@@ -53,6 +53,8 @@ pub trait MemoryAddress:
     + Mul 
     + Div
     + Rem
+    + Shl 
+    + Shr
     + BitAnd
     + BitAndAssign
     + BitOr
@@ -111,6 +113,35 @@ impl From<usize> for VirtAddress {
 }
 
 
+
+impl Shl<usize> for VirtAddress {
+    type Output = VirtAddress;
+    fn shl(self, rhs: usize) -> Self::Output {
+       VirtAddress { base: self.base.shl(rhs) } 
+    }
+}
+
+impl Shl for VirtAddress {
+    type Output = VirtAddress;
+    fn shl(self, rhs: Self) -> Self::Output {
+        VirtAddress { base: self.base.shl(rhs.base) }
+    }
+}
+
+impl Shr<usize> for VirtAddress {
+    type Output = Self;
+    fn shr(self, rhs: usize) -> Self::Output {
+        VirtAddress { base: self.base.shr(rhs) }
+    }
+}
+
+impl Shr for VirtAddress {
+    type Output = Self;
+    fn shr(self, rhs: Self) -> Self::Output {
+        VirtAddress { base: self.base.shr(rhs.base) }
+    }
+}
+
 impl MemoryAddress for PhysAddress {}
 
 impl Mul for PhysAddress {
@@ -153,4 +184,30 @@ impl Rem<usize> for PhysAddress {
     }
 }
 
+impl Shl<usize> for PhysAddress {
+    type Output = PhysAddress;
+    fn shl(self, rhs: usize) -> Self::Output {
+       PhysAddress { base: self.base.shl(rhs) } 
+    }
+}
 
+impl Shl for PhysAddress {
+    type Output = PhysAddress;
+    fn shl(self, rhs: Self) -> Self::Output {
+        PhysAddress { base: self.base.shl(rhs.base) }
+    }
+}
+
+impl Shr<usize> for PhysAddress {
+    type Output = Self;
+    fn shr(self, rhs: usize) -> Self::Output {
+        PhysAddress { base: self.base.shr(rhs) }
+    }
+}
+
+impl Shr for PhysAddress {
+    type Output = Self;
+    fn shr(self, rhs: Self) -> Self::Output {
+        PhysAddress { base: self.base.shr(rhs.base) }
+    }
+}
