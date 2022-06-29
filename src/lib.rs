@@ -17,6 +17,8 @@ mod exceptions;
 
 use core::arch::asm;
 
+use crate::cpu::setup_no_vm;
+
 
 // ///////////////////////////////////
 // / RUST MACROS
@@ -82,6 +84,7 @@ fn abort() -> ! {
 #[no_mangle]
 extern "C"
 fn kmain() -> ! {
+    uart::Uart::new(0x1000_0000).init(); 
     println!("Hello World");
     loop {}
 }
@@ -89,13 +92,16 @@ fn kmain() -> ! {
 #[no_mangle]
 extern "C" 
 fn kinit() {
-
+    uart::Uart::new(0x1000_0000).init(); 
+    println!("[log] kinit started");
+    setup_no_vm();
+    println!("[log] setup sapt with bare mode");
+    println!("RETURNING");
 }
 
 #[no_mangle]
 extern "C" 
-fn kinit_hart() {
-
+fn kinit_hart() { 
 }
 
 
