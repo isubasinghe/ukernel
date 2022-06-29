@@ -15,3 +15,4 @@ Cargo.lock
 
 *.elf 
 *.dsk
+.ccls-cache
