@@ -6,11 +6,14 @@ extern crate tock_registers;
 extern crate spin; 
 extern crate lazy_static;
 extern crate derive_more;
+extern crate riscv;
 
 mod uart;
 mod cells;
 mod io;
 mod memory;
+mod cpu;
+mod exceptions;
 
 use core::arch::asm;
 
@@ -64,6 +67,7 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
 	}
 	abort();
 }
+
 #[no_mangle]
 extern "C"
 fn abort() -> ! {
@@ -74,13 +78,7 @@ fn abort() -> ! {
 	}
 }
 
-// ///////////////////////////////////
-// / CONSTANTS
-// ///////////////////////////////////
 
-// ///////////////////////////////////
-// / ENTRY POINT
-// ///////////////////////////////////
 #[no_mangle]
 extern "C"
 fn kmain() -> ! {
@@ -88,8 +86,18 @@ fn kmain() -> ! {
     loop {}
 }
 
-// ///////////////////////////////////
-// / RUST MODULES
-// ///////////////////////////////////
+#[no_mangle]
+extern "C" 
+fn kinit() {
+
+}
+
+#[no_mangle]
+extern "C" 
+fn kinit_hart() {
+
+}
+
+
 
 
