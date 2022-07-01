@@ -85,7 +85,7 @@ fn abort() -> ! {
 extern "C"
 fn kmain() -> ! {
     uart::Uart::new(0x1000_0000).init(); 
-    println!("Hello World");
+    println!("[log] started");
     loop {}
 }
 
@@ -96,7 +96,6 @@ fn kinit() {
     println!("[log] kinit started");
     setup_no_vm();
     println!("[log] setup sapt with bare mode");
-    println!("RETURNING");
 }
 
 #[no_mangle]
