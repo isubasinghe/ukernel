@@ -81,8 +81,37 @@ my_m_trap:
 	li t1, (1 << 28)
 	li t2, 46
 	sb t2, 0(t1)
+	
 	li t2, 10
 	sb t2, 0(t1)
+
+	
+	# put 0x0200_0000 in t0
+	li t0, 1
+	slli t0,t0, 25
+
+	
+	# put 0x0000_4000 in t1
+	li t1, 0x00004000
+
+	# put 0x0200_4000 in t1
+	or t1, t1, t0
+
+	# put 0x0000_bff8 in t2
+	li t2, 0x0000bff8
+
+	# put 0x0200_bff8 in t2
+	or t2, t2, t0
+
+	# 10_000_000 
+	li t4, 9998336
+	addi t4, t4, 1664
+	
+	ld t3, 0(t2)
+	add t5, t4, t3
+	sw t5, 0(t1)
+
+
 	mret
 
 
@@ -93,7 +122,7 @@ my_s_trap:
 	li t2, 97
 	sb t2, 0(t1)
 	li t2, 10
-	sb t2, 0(t1)
+	sb t2, 0(t1)	
 	mret
 
 bitdata:
@@ -122,4 +151,5 @@ loop_end:
 	li t2, 10
 	sb t2, 0(t1)
 	ret 
+
 
