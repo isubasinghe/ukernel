@@ -50,6 +50,7 @@ _start:
 	li t0, ~0
 
 	# delegate machine interrupts and exceptions to supervisor mode
+	# (This doesn't actually seem to work or perhaps I am misunderstanding what is going on?)
 	csrw mideleg, t0
 	csrw medeleg, t0
 
@@ -62,6 +63,7 @@ _start:
 
 	# Do not allow interrupts while running kinit
 	csrw	mie, zero
+
 	# Machine's exception program counter (MEPC) is set to `kinit`.
 	la		t1, kinit
 	csrw	mepc, t1
@@ -70,12 +72,10 @@ _start:
 	# We use mret here so that the mstatus register is properly updated.
 	mret
 3:
-	li t0, 0xaaa
-	csrw mie, t0
-
-	csrr a0, mie
-	call print_reg
-	ecall 
+	li t0, 0b111011
+	csrr t1, mie
+	or t0, t0, t1	
+	csrw mie, t0 
 
 	j kmain
 4:
@@ -88,6 +88,15 @@ _start:
 .global my_m_trap
 .align 4
 my_m_trap:
+
+	csrr t0, mcause 
+	csrr t1, mepc 
+	csrr t2, mtval 
+
+	csrr a0, mcause
+	call print_reg
+	
+
 	li t1, (1 << 28)
 	li t2, 46
 	sb t2, 0(t1)
@@ -116,7 +125,7 @@ my_m_trap:
 	# 10_000_000 
 	li t4, 9998336
 	addi t4, t4, 1664
-	
+
 	ld t3, 0(t2)
 	add t5, t4, t3
 	sw t5, 0(t1)
