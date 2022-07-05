@@ -87,7 +87,7 @@ fn kmain() -> ! {
     uart::Uart::new(0x1000_0000).init(); 
     println!("[log] started");
     loop {
-        println!("blah");
+        // println!("blah");
     }
     loop {}
 }

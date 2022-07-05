@@ -6,7 +6,7 @@ CFLAGS=-Wall -Wextra -pedantic -Wextra -O0 -g -std=c++17
 CFLAGS+=-static -ffreestanding -nostdlib -fno-rtti -fno-exceptions
 CFLAGS+=-march=rv64gc -mabi=lp64
 INCLUDES=
-LINKER_SCRIPT=-Tsrc/lds/virt.lds
+LINKER_SCRIPT=-Tsrc/lds/virt.ld
 TYPE=debug
 RUST_TARGET=./target/riscv64_soft_float/$(TYPE)
 LIBS=-L$(RUST_TARGET)

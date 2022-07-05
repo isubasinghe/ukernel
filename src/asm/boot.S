@@ -40,7 +40,26 @@ _start:
 	# Setting `mstatus` register:
 	# 0b01 << 11: Machine's previous protection mode is 2 (MPP=2).
 	li		t0, 0b11 << 11
+	# SIE = 1
+	ori	t0, t0, 0b10
+	# MIE = 1 
+	ori t0, t0, 1 << 3
+	
 	csrw	mstatus, t0
+	
+	li t0, ~0
+
+	# delegate machine interrupts and exceptions to supervisor mode
+	csrw mideleg, t0
+	csrw medeleg, t0
+
+	la t0, my_m_trap
+	csrw mtvec, t0
+
+	la t0, my_s_trap 
+	csrw stvec, t0
+
+
 	# Do not allow interrupts while running kinit
 	csrw	mie, zero
 	# Machine's exception program counter (MEPC) is set to `kinit`.
@@ -51,23 +70,14 @@ _start:
 	# We use mret here so that the mstatus register is properly updated.
 	mret
 3:
+	li t0, 0xaaa
+	csrw mie, t0
 
-	li		t0, 0b01 << 11 | (1 << 7) | (1 << 5)
-	csrw	mstatus, t0
-	
+	csrr a0, mie
+	call print_reg
+	ecall 
 
-	li t2, 0x888
-	csrw	mie, t2
-
-	la t2, my_m_trap
-	csrw mtvec, t2
-
-	la		t1, kmain
-	csrw	mepc, t1
-	# Set the return address to get us into supervisor mode
-	la		ra, 3b
-	# We use mret here so that the mstatus register is properly updated.
-	mret
+	j kmain
 4:
 	# wfi = wait for interrupt. This is a hint to the harts to shut everything needed
 	# down. However, the RISC-V specification allows for wfi to do nothing. Anyway,
@@ -123,7 +133,7 @@ my_s_trap:
 	sb t2, 0(t1)
 	li t2, 10
 	sb t2, 0(t1)	
-	mret
+	sret
 
 bitdata:
 	.byte 48, 49
