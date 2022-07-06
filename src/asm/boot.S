@@ -37,46 +37,9 @@ _start:
 	bltu	a0, a1, 1b
 2:
 	la		sp, _stack_end
-	# Setting `mstatus` register:
-	# 0b01 << 11: Machine's previous protection mode is 2 (MPP=2).
-	li		t0, 0b11 << 11
-	# SIE = 1
-	ori	t0, t0, 0b10
-	# MIE = 1 
-	ori t0, t0, 1 << 3
-	
-	csrw	mstatus, t0
-	
-	li t0, ~0
-
-	# delegate machine interrupts and exceptions to supervisor mode
-	# (This doesn't actually seem to work or perhaps I am misunderstanding what is going on?)
-	csrw mideleg, t0
-	csrw medeleg, t0
-
 	la t0, my_m_trap
 	csrw mtvec, t0
-
-	la t0, my_s_trap 
-	csrw stvec, t0
-
-
-	# Do not allow interrupts while running kinit
-	csrw	mie, zero
-
-	# Machine's exception program counter (MEPC) is set to `kinit`.
-	la		t1, kinit
-	csrw	mepc, t1
-	# Set the return address to get us into supervisor mode
-	la		ra, 3f
-	# We use mret here so that the mstatus register is properly updated.
-	mret
 3:
-	li t0, 0b111011
-	csrr t1, mie
-	or t0, t0, t1	
-	csrw mie, t0 
-
 	j kmain
 4:
 	# wfi = wait for interrupt. This is a hint to the harts to shut everything needed
@@ -88,87 +51,39 @@ _start:
 .global my_m_trap
 .align 4
 my_m_trap:
-
-	csrr t0, mcause 
-	csrr t1, mepc 
-	csrr t2, mtval 
-
-	csrr a0, mcause
-	call print_reg
-	
-
-	li t1, (1 << 28)
-	li t2, 46
-	sb t2, 0(t1)
-	
-	li t2, 10
-	sb t2, 0(t1)
-
-	
-	# put 0x0200_0000 in t0
-	li t0, 1
-	slli t0,t0, 25
-
-	
-	# put 0x0000_4000 in t1
-	li t1, 0x00004000
-
-	# put 0x0200_4000 in t1
-	or t1, t1, t0
-
-	# put 0x0000_bff8 in t2
-	li t2, 0x0000bff8
-
-	# put 0x0200_bff8 in t2
-	or t2, t2, t0
-
-	# 10_000_000 
-	li t4, 9998336
-	addi t4, t4, 1664
-
-	ld t3, 0(t2)
-	add t5, t4, t3
-	sw t5, 0(t1)
-
-
 	mret
 
 
 .global my_s_trap
 .align 4
 my_s_trap:
-	li t1, (1 << 28)
-	li t2, 97
-	sb t2, 0(t1)
-	li t2, 10
-	sb t2, 0(t1)	
 	sret
 
 bitdata:
 	.byte 48, 49
 
 
-print_reg: 
-	li t0, 32 # counter
-loop_head:
-	addi t0, t0, -1
+
+// print_reg: 
+// 	li t0, 32 # counter
+// loop_head:
+// 	addi t0, t0, -1
 	
-	srlw t1, a0, t0
-	li t2, 1
-	and t1, t1, t2
+// 	srlw t1, a0, t0
+// 	li t2, 1
+// 	and t1, t1, t2
 	
-	la t2, bitdata 
-	add t2, t2, t1
+// 	la t2, bitdata 
+// 	add t2, t2, t1
 
-	ld t2, 0(t2)
+// 	ld t2, 0(t2)
 
-	li t1, (1 << 28)
-	sb t2, 0(t1)
+// 	li t1, (1 << 28)
+// 	sb t2, 0(t1)
 
-	bnez t0, loop_head
-loop_end: 
-	li t2, 10
-	sb t2, 0(t1)
-	ret 
-
+// 	bnez t0, loop_head
+// loop_end: 
+// 	li t2, 10
+// 	sb t2, 0(t1)
+// 	ret 
 

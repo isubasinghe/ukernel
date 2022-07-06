@@ -1,6 +1,7 @@
 #####
 ## BUILD
 #####
+SPIKE=spike
 CC=riscv64-unknown-linux-gnu-gcc
 CFLAGS=-Wall -Wextra -pedantic -Wextra -O0 -g -std=c11
 CFLAGS+=-static -ffreestanding -nostdlib -fno-exceptions
@@ -32,6 +33,11 @@ all:
 run: all
 	$(QEMU) -machine $(MACH) -cpu $(CPU) -smp $(CPUS) -m $(MEM)  -nographic -serial mon:stdio -bios none -kernel $(OUT) -drive if=none,format=raw,file=$(DRIVE),id=foo -device virtio-blk-device,scsi=off,drive=foo
 
+dumpdbt: 
+	$(QEMU) -machine $(MACH) -machine dumpdtb=riscv64-$(MACH).dtb
+
+spike: all dumpdbt
+	$(SPIKE) --dtb riscv64-$(MACH).dtb -d $(OUT)
 
 .PHONY: clean
 clean:
