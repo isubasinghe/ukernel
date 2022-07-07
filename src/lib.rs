@@ -22,6 +22,7 @@ use core::arch::asm;
 use interrupts::constants::*;
 use riscv::asm as rasm;
 use uart::logger::UartLogger;
+use userspace::constants::USERSPACE_INIT;
 
 static LOGGER: UartLogger = UartLogger{};
 
@@ -54,7 +55,6 @@ macro_rules! println
 // ///////////////////////////////////
 // / LANGUAGE STRUCTURES / FUNCTIONS
 // ///////////////////////////////////
-#[no_mangle]
 #[lang = "eh_personality"]
 extern "C" fn eh_personality() {}
 
