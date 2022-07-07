@@ -74,12 +74,7 @@ fn panic(info: &core::panic::PanicInfo) -> ! {
     abort();
 }
 
-#[no_mangle]
-extern "C" fn abort() -> ! {
-    unsafe {
-        asm!("li a0, 1",
-             "ecall");
-    }
+fn abort() -> ! {
     loop {}
 }
 
