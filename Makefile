@@ -15,6 +15,7 @@ SOURCES_ASM=$(wildcard src/asm/*.S)
 SOURCES_C=$(wildcard src/**/*.c)
 LIB=-lukernel -lgcc
 OUT=os.elf
+mode=-d
 
 #####
 ## QEMU
@@ -37,7 +38,7 @@ dumpdbt:
 	$(QEMU) -machine $(MACH) -machine dumpdtb=riscv64-$(MACH).dtb
 
 spike: all dumpdbt
-	$(SPIKE) --dtb riscv64-$(MACH).dtb -d $(OUT)
+	$(SPIKE) --isa rv64gc --priv msu --dtb riscv64-$(MACH).dtb $(mode) $(OUT)
 
 .PHONY: clean
 clean:

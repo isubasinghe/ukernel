@@ -37,20 +37,73 @@ _start:
 	bltu	a0, a1, 1b
 2:
 	la		sp, _stack_end
+
+	# set and test mtvec
 	la t0, my_m_trap
 	csrw mtvec, t0
+
+	csrr t0, mtvec 
+	la t1, my_m_trap
+	bne t0, t1, error
+
+	# set and test mstatus
+	la t0, 0b1100010101010
+	mv t2, t0
+	csrr t1, mstatus
+	or t2, t2, t1
+	csrw mstatus, t2
+	csrr t0, mstatus 
+	bne t0, t2, error	
+
+	# set and test mie
+	li t0, 0
+	csrw mie, t0
+
+	csrr t0, mie
+	li t1, 0 
+	bne t1, t0, error
+
+	# set and test mepc	
+	la t0, 3f
+	csrw mepc, t0 
+	csrr t0, mepc 
+	la t1, 3f 
+	bne t0, t1, error
+
+	# set and test satp
+	la t0, 0 
+	csrw satp, t0
+	csrr t1, satp
+	bne t0, t1, error
+	
+	# set and test sepc
+	la t0, my_s_trap 
+	csrw sepc, t0 
+
+	csrr t1, sepc
+	bne t0, t1, error
+
+	# switch to supervisor mode
+	mret
 3:
 	j kmain
+
+# set up stack later
 4:
-	# wfi = wait for interrupt. This is a hint to the harts to shut everything needed
-	# down. However, the RISC-V specification allows for wfi to do nothing. Anyway,
-	# with QEMU, this will save some CPU!
-	wfi
-	j		4b
+	wfi 
+	j 4b
+
+error: 
+	wfi 
+	j error 
 
 .global my_m_trap
 .align 4
 my_m_trap:
+	csrr t0, mcause 
+	csrr t1, mepc 
+	csrr t2, mtval
+
 	mret
 
 
@@ -59,11 +112,84 @@ my_m_trap:
 my_s_trap:
 	sret
 
+
+m_usoft_int:
+	mret
+
+m_ssoft_int:
+	mret
+
+m_nop:
+	mret
+
+m_msoft_int:
+	mret
+
+m_utime_int:
+	mret
+
+m_stime_int:
+	mret
+
+m_mtime_int:
+	mret
+
+m_uext_int:
+	mret
+
+m_sexit_int:
+	mret
+
+m_mexit_int:
+	mret
+
+m_instr_addr_mis:
+	mret
+
+m_instr_access_fault:
+	mret
+
+m_illegal_instr:
+	mret
+
+m_breakpoint:
+	mret
+
+m_ld_addr_mis:
+	mret
+
+m_ld_addr_fault:
+	mret
+
+m_stramo_addr_mis:
+	mret
+
+m_stramo_access_fault:
+	mret
+
+m_uecall:
+	csrr t0, mepc
+	addi t0, t0, 4
+	mret
+
+m_secall:
+	csrr t0, mepc
+	addi t0, t0, 4
+	mret
+
+m_mecall:
+	csrr t0, mepc
+	addi t0, t0, 4
+	mret
+
+m_instr_page_fault:
+	mret
+
+m_trap_handlers:
+	.dword m_usoft_int, m_ssoft_int, m_nop
+
 bitdata:
 	.byte 48, 49
-
-
-
 // print_reg: 
 // 	li t0, 32 # counter
 // loop_head:

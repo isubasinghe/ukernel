@@ -3,7 +3,7 @@ use crate::print;
 use crate::println;
 use crate::uart::Uart;
 
-#[no_mangle]
+/* #[no_mangle]
 extern "C" fn m_trap(
     epc: usize,
     tval: usize,
@@ -105,4 +105,4 @@ extern "C" fn m_trap(
     };
     // Finally, return the updated program counter
     return_pc
-}
+} */
