@@ -2,6 +2,8 @@ use core::convert::TryInto;
 use core::fmt::Write;
 use core::fmt::Error;
 
+pub mod logger;
+
 pub struct Uart {
 	base_address: usize,
 }

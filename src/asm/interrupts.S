@@ -1,35 +1,29 @@
-.section .rodata 
+m_usoft_int:
+	mret
 
-.global USER_INTERRUPT 
-USER_INTERRUPT: .word 0 
+m_ssoft_int:
+	mret
 
-.global SOFTWARE_INTERRUPT 
-SOFTWARE_INTERRUPT: .word 1
+m_nop:
+	mret
 
-.global MACHINE_SOFTWARE_INTERRUPT 
-MACHINE_SOFTWARE_INTERRUPT: .word 3 
+m_msoft_int:
+	mret
 
-.global USER_TIMER_INTERRUPT 
-USER_TIMER_INTERRUPT: .word 4 
+m_utime_int:
+	mret
 
-.global SUPERVISOR_TIMER_INTERRUPT
-SUPERVISOR_TIMER_INTERRUPT: .word 5
+m_stime_int:
+	mret
 
+m_mtime_int:
+	mret
 
-.global MACHINE_TIMER_INTERRUPT 
-MACHINE_TIMER_INTERRUPT: .word 7
+m_uext_int:
+	mret
 
-.global USER_EXTERNAL_INTERRUPT
-USER_EXTERNAL_INTERRUPT: .word 8
+m_sexit_int:
+	mret
 
-.global SUPERVISOR_EXTERNAL_INTERRUPT 
-SUPERVISOR_EXTERNAL_INTERRUPT: .word 9
-
-.global MACHINE_EXTERNAL_INTERRUPT  
-MACHINE_EXTERNAL_INTERRUPT: .word 11
-
-
-.global SOFTWARE_TVAL_ENABLE_MIE
-SOFTWARE_TVAL_ENABLE_MIE: .word 1
-
-
+m_mexit_int:
+	mret

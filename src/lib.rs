@@ -7,6 +7,7 @@ extern crate lazy_static;
 extern crate riscv;
 extern crate spin;
 extern crate tock_registers;
+extern crate log; 
 
 mod cells;
 mod cpu;
@@ -15,10 +16,14 @@ mod io;
 mod memory;
 mod uart;
 mod interrupts;
+mod userspace;
 
 use core::arch::asm;
 use interrupts::constants::*;
 use riscv::asm as rasm;
+use uart::logger::UartLogger;
+
+static LOGGER: UartLogger = UartLogger{};
 
 // ///////////////////////////////////
 // / RUST MACROS
@@ -82,6 +87,9 @@ extern "C" fn abort() -> ! {
 // so we do not have access to the m* registers or wfi
 #[no_mangle]
 extern "C" fn kmain() -> ! {
+    uart::Uart::new(0x1000_0000).init();
+    log::set_logger(&LOGGER).map(|()|log::set_max_level(log::LevelFilter::Debug)).unwrap();
+    log::info!("kmain initialising");
     loop {}
 }
 
