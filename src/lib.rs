@@ -8,6 +8,7 @@ extern crate riscv;
 extern crate spin;
 extern crate tock_registers;
 extern crate log; 
+extern crate bit_field;
 
 mod cells;
 mod cpu;
@@ -23,6 +24,7 @@ use interrupts::constants::*;
 use riscv::asm as rasm;
 use uart::logger::UartLogger;
 use userspace::constants::USERSPACE_INIT;
+use bit_field::BitField;
 
 static LOGGER: UartLogger = UartLogger{};
 
@@ -82,14 +84,17 @@ fn abort() -> ! {
 // so we do not have access to the m* registers or wfi
 #[no_mangle]
 extern "C" fn kmain() -> ! {
-    uart::Uart::new(0x1000_0000).init();
+    /* uart::Uart::new(0x1000_0000).init();
     log::set_logger(&LOGGER).map(|()|log::set_max_level(log::LevelFilter::Debug)).unwrap();
-    log::info!("kmain initialising");
-    let mut i = 0;
+    log::info!("kmain initialising"); */
+
+    
+    /* let mut i:usize = 0;
     loop {
         log::info!("on loop {}", i);
         i += 1;
-    }
+    } */
+    loop{}
 }
 
 // this starts in supervisor mode 

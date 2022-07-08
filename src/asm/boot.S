@@ -86,6 +86,12 @@ _start:
 	# switch to supervisor mode
 	mret
 3:
+	# this should trigger a software interrupt but it does not
+	csrr t0, sip
+	ori t0, t0, 0b10
+	csrw sip, t0 
+	csrr t1, sip
+	bne t0, t1, error
 	j kmain
 
 # set up stack later
