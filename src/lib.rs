@@ -85,7 +85,11 @@ extern "C" fn kmain() -> ! {
     uart::Uart::new(0x1000_0000).init();
     log::set_logger(&LOGGER).map(|()|log::set_max_level(log::LevelFilter::Debug)).unwrap();
     log::info!("kmain initialising");
-    loop {}
+    let mut i = 0;
+    loop {
+        log::info!("on loop {}", i);
+        i += 1;
+    }
 }
 
 // this starts in supervisor mode 
