@@ -56,11 +56,11 @@ _start:
 	bne t0, t2, error	
 
 	# set and test mie
-	li t0, 0
+	li t0, 0b10
 	csrw mie, t0
 
 	csrr t0, mie
-	li t1, 0 
+	li t1, 0b10
 	bne t1, t0, error
 
 	# set and test mepc	
@@ -86,12 +86,10 @@ _start:
 	# switch to supervisor mode
 	mret
 3:
-	# this should trigger a software interrupt but it does not
-	csrr t0, sip
+	csrr t0, mip
 	ori t0, t0, 0b10
-	csrw sip, t0 
-	csrr t1, sip
-	bne t0, t1, error
+	csrw mip, t0 
+
 	j kmain
 
 # set up stack later
@@ -100,7 +98,6 @@ _start:
 	j 4b
 
 error: 
-	wfi 
 	j error 
 
 .global my_m_trap
@@ -110,7 +107,12 @@ my_m_trap:
 	csrr t1, mepc 
 	csrr t2, mtval
 
-	mret
+	# load last bit to t3
+	srli t3, t0, 63
+
+	bnez t3, exceptions
+exceptions:	
+	
 
 
 .global my_s_trap
