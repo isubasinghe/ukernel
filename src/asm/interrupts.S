@@ -1,3 +1,12 @@
+# expcetion handlers for 'M' mode code. 
+# There is a certain "ABI" to be followed here 
+# t0 will contain mcause with the mode bit cleared 
+# t1 will contain mepc 
+# t2 will contain mtval 
+# t6 will contain the previous mie 
+# you must restore the mie before you "mret" unless you really know what 
+# you are doing. 
+
 .global m_usoft_int
 .align 4
 m_usoft_int:
@@ -6,6 +15,13 @@ m_usoft_int:
 .global m_ssoft_int 
 .align 4
 m_ssoft_int:
+	# clear the mip register
+	csrr t1, mip
+	li t2, ~(1 << 1)
+
+	and t1, t1, t2
+	csrw mip, t1
+
 	mret
 
 .global m_nop_int
