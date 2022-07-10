@@ -47,7 +47,7 @@ _start:
 	bne t0, t1, error
 
 	# set and test mstatus
-	la t0, 0b1100010101010
+	li t0, 0b1100010101010
 	mv t2, t0
 	csrr t1, mstatus
 	or t2, t2, t1
@@ -71,7 +71,7 @@ _start:
 	bne t0, t1, error
 
 	# set and test satp
-	la t0, 0 
+	li t0, 0 
 	csrw satp, t0
 	csrr t1, satp
 	bne t0, t1, error
