@@ -86,6 +86,10 @@ _start:
 	# switch to supervisor mode
 	mret
 3:
+
+	la a0, SOFTWARE_VAL_ENABLE_MIE
+	lw a0, 0(a0)
+
 	csrr t0, mip
 	ori t0, t0, 0b10
 	csrw mip, t0 
@@ -96,6 +100,7 @@ _start:
 	wfi 
 	j 4b
 
+.global error
 error: 
 	j error 
 
@@ -169,26 +174,27 @@ my_s_trap:
 
 bitdata:
 	.byte 48, 49
-// print_reg: 
-// 	li t0, 32 # counter
-// loop_head:
-// 	addi t0, t0, -1
+
+print_reg: 
+	li t0, 32 # counter
+loop_head:
+	addi t0, t0, -1
 	
-// 	srlw t1, a0, t0
-// 	li t2, 1
-// 	and t1, t1, t2
+	srlw t1, a0, t0
+	li t2, 1
+	and t1, t1, t2
 	
-// 	la t2, bitdata 
-// 	add t2, t2, t1
+	la t2, bitdata 
+	add t2, t2, t1
 
-// 	ld t2, 0(t2)
+	ld t2, 0(t2)
 
-// 	li t1, (1 << 28)
-// 	sb t2, 0(t1)
+	li t1, (1 << 28)
+	sb t2, 0(t1)
 
-// 	bnez t0, loop_head
-// loop_end: 
-// 	li t2, 10
-// 	sb t2, 0(t1)
-// 	ret 
+	bnez t0, loop_head
+loop_end: 
+	li t2, 10
+	sb t2, 0(t1)
+	ret 
 

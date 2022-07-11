@@ -15,6 +15,20 @@ m_usoft_int:
 .global m_ssoft_int 
 .align 4
 m_ssoft_int:
+	
+	li t0, 1 
+	bne a0, t0, end 
+	
+	# a0 == 1
+	csrr t0, mie 
+	li t1, 0b10101010
+	or t0, t1, t0
+
+	csrw mie, t0
+	csrr t1, mie 
+	bne t0, t1, error
+
+	end: 
 	# clear the mip register
 	csrr t1, mip
 	li t2, ~(1 << 1)
@@ -47,6 +61,21 @@ m_stime_int:
 .global m_mtime_int
 .align 4
 m_mtime_int:
+	la t3, 0x2000000
+
+	li t4, 0x4000	
+	add t3, t3, t4 # mtimecmp address is now in t3
+	
+	li t5, 0x7FF8
+	add t4, t3, t5
+
+	ld t1, 0(t4) # value of mtime in t1
+
+	li t0, 0x989680
+	add t0, t0, t1 #*mtime + 10_000_000
+	
+	sd t0, 0(t3)
+
 	mret
 
 .global m_uext_int
