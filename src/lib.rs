@@ -1,6 +1,6 @@
 #![no_std]
 #![no_main]
-#![feature(panic_info_message, lang_items)]
+#![feature(panic_info_message, lang_items, fn_align)]
 
 extern crate derive_more;
 extern crate lazy_static;
