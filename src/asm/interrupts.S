@@ -1,9 +1,10 @@
 # expcetion handlers for 'M' mode code. 
 # There is a certain "ABI" to be followed here 
-# t0 will contain mcause with the mode bit cleared 
-# t1 will contain mepc 
-# t2 will contain mtval 
-# t6 will contain the previous mie 
+# a0 is the argument register
+# a1 will contain mcause with the mode bit cleared #a1
+# a2 will contain mepc #a2 
+# a3 will contain mtval #a3
+# a4 will contain the previous mie #a4
 # you must restore the mie before you "mret" unless you really know what 
 # you are doing. 
 
@@ -58,25 +59,27 @@ m_utime_int:
 m_stime_int:
 	mret
 
-.global m_mtime_int
-.align 4
-m_mtime_int:
-	la t3, 0x2000000
 
-	li t4, 0x4000	
-	add t3, t3, t4 # mtimecmp address is now in t3
+// this is now a rust function
+// .global m_mtime_int
+// .align 4
+// m_mtime_int:
+// 	la t3, 0x2000000
+
+// 	li t4, 0x4000	
+// 	add t3, t3, t4 # mtimecmp address is now in t3
 	
-	li t5, 0x7FF8
-	add t4, t3, t5
+// 	li t5, 0x7FF8
+// 	add t4, t3, t5
 
-	ld t1, 0(t4) # value of mtime in t1
+// 	ld t1, 0(t4) # value of mtime in t1
 
-	li t0, 0x989680
-	add t0, t0, t1 #*mtime + 10_000_000
+// 	li t0, 0x989680
+// 	add t0, t0, t1 #*mtime + 10_000_000
 	
-	sd t0, 0(t3)
+// 	sd t0, 0(t3)
 
-	mret
+// 	mret
 
 .global m_uext_int
 .align 4

@@ -107,30 +107,60 @@ error:
 .global my_m_trap
 .align 4
 my_m_trap:
+	csrr a0, mie 
+	csrw mie, zero 
+	csrr a1, mcause 
+	csrr a2, mepc 
+	csrr a3, mtval 
+	
+	## why are we doing this? 
+	# we want to know which offset to use 
+	# so that we can jump to it. 
+	# RISC-V stores if it was an interrupt or not 
+	# in the last bit
+
+	# load last bit to t0
+	srli t0, a1, 63 #t3
+	
+	# 0 or 8 in t0
+	li t1, 8  #t4
+	mul t0, t0, t1
+	
+	# load the handlers to t2
+	la t2, handlers  #t4
+	
+	# increment by a dword or 0 
+	# the dword was obtained from 
+	# multiplying the interrupt bit by 8 above
+	add t0, t2, t0
+	# load the actual value in that address to t0
+	ld t0, 0(t0)
+
+	# mask bit to clear mode value 
+	# 0b0111.....111 
+	li t2, 1
+	sllli t2, t2, 63
+	not t2, t2
+
+	####################################
+
 	csrr t6, mie
 	csrw mie, zero 
 	
-	# for debugging only
-	la t0, m_ssoft_int
-	la t1, m_interrupt_handlers
 
 	# do not touch t0-t2 or t6
 	csrr t0, mcause 
 	csrr t1, mepc 
 	csrr t2, mtval
-
 	# load last bit to t3
 	srli t3, t0, 63
-
 	# 0 or 8 in t4
 	li t4, 8
 	mul t3, t3, t4
-	# t4 dies
-	
+	# t4 dies	
 	# load address of handlers
 	# t4 alive
 	la t4, handlers
-
 	# increment by a dword or 0  and store in t3
 	# address of correct exception handler is now in t3
 	add t3, t4, t3
@@ -153,7 +183,7 @@ my_m_trap:
 	# this containts the offset for our address
 	slli t4, t0, 3
 	
-	# hopefully the correct address to jump to, in this case m_ssoft_int
+	# hopefully the correct address to jump to
 	add t3, t3, t4
 
 	ld t3, 0(t3)
