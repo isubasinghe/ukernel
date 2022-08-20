@@ -51,7 +51,7 @@ telling the linker script here that we have one pool of RAM.
 */
 MEMORY
 {
-  ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 128M
+  ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 1024M
 }
 
 /*
@@ -210,6 +210,12 @@ SECTIONS
     PROVIDE(_bss_end = .);
   } >ram AT>ram :bss
 
+  PROVIDE(_init_stack_start = _bss_end);
+  PROVIDE(_init_stack_end = _init_stack_start +2M);
+
+  PROVIDE(_init_heap_start = _init_stack_end);
+  PROVIDE(_init_heap_end = _init_heap_start + 16M);
+
   /*
      The following will be helpful when we allocate the kernel stack (_stack) and
 	 determine where the heap begnis and ends (_heap_start and _heap_start + _heap_size)/
@@ -230,7 +236,7 @@ SECTIONS
 	 Therefore we set the stack at the very bottom of its allocated slot.
 	 When we go to allocate from the stack, we'll subtract the number of bytes we need.
   */
-  PROVIDE(_stack_start = _bss_end);
+  PROVIDE(_stack_start = _init_heap_end);
   PROVIDE(_stack_end = _stack_start + 0x8000);
   PROVIDE(_memory_end = ORIGIN(ram) + LENGTH(ram));
 
