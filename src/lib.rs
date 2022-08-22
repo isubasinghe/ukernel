@@ -18,6 +18,8 @@ mod memory;
 mod uart;
 mod interrupts;
 mod userspace;
+mod capability;
+mod lrpc;
 
 use core::arch::asm;
 use interrupts::constants::*;

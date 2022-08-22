@@ -216,3 +216,10 @@ impl Shr for PhysAddress {
         PhysAddress { base: self.base.shr(rhs.base) }
     }
 }
+
+#[repr(C)]
+#[derive(Copy, Clone, Debug)]
+pub struct MemoryRange<T: MemoryAddress> {
+    pub start: T, 
+    pub end: T
+}
