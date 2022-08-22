@@ -23,6 +23,7 @@ mod lrpc;
 
 use core::arch::asm;
 use interrupts::constants::*;
+use memory::types::PhysAddress;
 use riscv::asm as rasm;
 use uart::logger::UartLogger;
 use userspace::constants::USERSPACE_INIT;
@@ -97,6 +98,11 @@ extern "C" fn kmain() -> ! {
         i += 1;
     } */
     loop{}
+}
+
+// switch to the userspace init process
+#[no_mangle]
+extern "C" fn switch_to_user_init(addr: PhysAddress) {
 }
 
 // this starts in supervisor mode 
