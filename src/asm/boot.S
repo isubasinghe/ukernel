@@ -21,8 +21,7 @@ _start:
 .option pop
 	# SATP should be zero, but let's make sure. Each HART has its own
 	# SATP register.
-	csrw	satp, zero
-	# Any hardware threads (hart) that are not bootstrapping
+	csrw	satp, zero # Any hardware threads (hart) that are not bootstrapping
 	# need to wait for an IPI
 	csrr	t0, mhartid
 	bnez	t0, 4f

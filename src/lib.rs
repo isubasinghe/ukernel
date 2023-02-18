@@ -87,17 +87,11 @@ fn abort() -> ! {
 // so we do not have access to the m* registers or wfi
 #[no_mangle]
 extern "C" fn kmain() -> ! {
-    /* uart::Uart::new(0x1000_0000).init();
+    uart::Uart::new(0x1000_0000).init();
     log::set_logger(&LOGGER).map(|()|log::set_max_level(log::LevelFilter::Debug)).unwrap();
-    log::info!("kmain initialising"); */
-
-    
-    /* let mut i:usize = 0;
-    loop {
-        log::info!("on loop {}", i);
-        i += 1;
-    } */
-    loop{}
+    log::info!("kmain initialising");
+    log::warn!("init process is not ready yet");    
+    loop {}
 }
 
 // switch to the userspace init process

@@ -43,6 +43,8 @@ pub struct VirtAddress {
     Clone,
     Debug,
 )]
+
+#[repr(C)]
 pub struct PhysAddress {
     base: usize,
 }
