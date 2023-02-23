@@ -85,13 +85,6 @@ _start:
 	# switch to supervisor mode
 	mret
 3:
-
-	la a0, SOFTWARE_VAL_ENABLE_MIE
-	lw a0, 0(a0)
-
-	csrr t0, mip
-	ori t0, t0, 0b10
-	csrw mip, t0 
 	j kmain
 
 # set up stack later

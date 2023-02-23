@@ -17,6 +17,10 @@ riscv = "0.8.0"
 log = "0.4.17"
 bit_field = "0.10.1"
 
+[dependencies.fdt-rs]
+version = "0.4.3"
+default-features = false
+
 [profile.dev]
 panic="abort"
 
