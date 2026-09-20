@@ -97,9 +97,10 @@ fn abort() -> ! {
 }
 
 // this starts in supervisor mode 
-// so we do not have access to the m* registers or wfi
+// Machine CSRs are unavailable; supervisor CSRs and wfi are available.
 #[no_mangle]
-extern "C" fn kmain() -> ! {
+// Boot arguments survive startup; DTB parsing/initramfs discovery comes next.
+extern "C" fn kmain(_hart_id: usize, _dtb: usize, _entry_mode: usize) -> ! {
     /* uart::Uart::new(0x1000_0000).init();
     log::set_logger(&LOGGER).map(|()|log::set_max_level(log::LevelFilter::Debug)).unwrap();
     log::info!("kmain initialising");
@@ -162,7 +163,7 @@ extern "C" fn switch_to_user_init(addr: PhysAddress) {
 }
 
 // this starts in supervisor mode 
-// so we do not have access to the m* registers or wfi
+// Machine CSRs are unavailable; supervisor CSRs and wfi are available.
 #[no_mangle]
 extern "C" fn kinit_hart(_hartid: usize) {
     loop {

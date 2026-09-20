@@ -1,5 +1,6 @@
 pub mod constants;
 pub mod mexceptions;
+pub mod supervisor;
 
 use crate::cpu::TrapFrame;
 use crate::print;

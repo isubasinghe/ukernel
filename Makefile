@@ -44,3 +44,12 @@ spike: all dumpdbt
 clean:
 	cargo clean
 	rm -f $(OUT)
+
+# Userspace packaging is independent of the kernel build.
+.PHONY: initramfs
+initramfs:
+	runghc Shakefile.hs initramfs
+
+.PHONY: uboot image boot-config
+uboot image boot-config:
+	runghc Shakefile.hs $@

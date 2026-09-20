@@ -1,35 +1,15 @@
-# expcetion handlers for 'M' mode code. 
-# There is a certain "ABI" to be followed here 
-# a0 is the argument register
-# a1 will contain mcause with the mode bit cleared #a1
-# a2 will contain mepc #a2 
-# a3 will contain mtval #a3
-# a4 will contain the previous mie #a4
-# you must restore the mie before you "mret" unless you really know what 
-# you are doing. 
+# Trap handlers use the C ABI: a0=cause, a1=mepc, a2=mtval, a3=frame.
+# Return with ret; boot.S restores interrupted registers and executes mret.
 
 .global m_usoft_int
 .align 4
 m_usoft_int:
-	mret
+	j error
 
 .global m_ssoft_int 
 .align 4
 m_ssoft_int:
 	
-	li t0, 1 
-	bne a0, t0, end 
-	
-	# a0 == 1
-	csrr t0, mie 
-	li t1, 0b10101010
-	or t0, t1, t0
-
-	csrw mie, t0
-	csrr t1, mie 
-	bne t0, t1, error
-
-	end: 
 	# clear the mip register
 	csrr t1, mip
 	li t2, ~(1 << 1)
@@ -37,27 +17,27 @@ m_ssoft_int:
 	and t1, t1, t2
 	csrw mip, t1
 
-	mret
+	ret
 
 .global m_nop_int
 .align 4 
 m_nop_int:
-	mret
+	j error
 
 .global m_msoft_int
 .align 4
 m_msoft_int:
-	mret
+	j error
 
 .global m_utime_int
 .align 4
 m_utime_int:
-	mret
+	j error
 
 .global m_stime_int
 .align 4
 m_stime_int:
-	mret
+	j error
 
 
 // this is now a rust function
@@ -84,19 +64,22 @@ m_stime_int:
 .global m_uext_int
 .align 4
 m_uext_int:
-	mret
+	j error
 
 .global m_sexit_int
 .align 4
 m_sexit_int:
-	mret
+	j error
 
 .global m_mexit_int
 .align 4
 m_mexit_int:
-	mret
+	j error
 
 .global m_interrupt_handlers
 .align 4
 m_interrupt_handlers:
 	.dword m_usoft_int, m_ssoft_int, m_nop_int, m_msoft_int, m_utime_int, m_stime_int, m_nop_int, m_mtime_int, m_uext_int, m_sexit_int, m_nop_int, m_mexit_int
+
+.global m_interrupt_handlers_end
+m_interrupt_handlers_end:

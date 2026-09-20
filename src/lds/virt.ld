@@ -51,7 +51,7 @@ telling the linker script here that we have one pool of RAM.
 */
 MEMORY
 {
-  ram   (wxa!ri) : ORIGIN = 0x80000000, LENGTH = 1024M
+  ram   (wxa!ri) : ORIGIN = DEFINED(KERNEL_BASE) ? KERNEL_BASE : 0x80000000, LENGTH = 1024M
 }
 
 /*
@@ -205,12 +205,14 @@ SECTIONS
   } >ram AT>ram :data
 
   .bss : {
+    . = ALIGN(8);
     PROVIDE(_bss_start = .);
     *(.sbss .sbss.*) *(.bss .bss.*)
+    . = ALIGN(8);
     PROVIDE(_bss_end = .);
   } >ram AT>ram :bss
 
-  PROVIDE(_init_stack_start = _bss_end);
+  PROVIDE(_init_stack_start = ALIGN(_bss_end, 16));
   PROVIDE(_init_stack_end = _init_stack_start +2M);
 
   PROVIDE(_init_heap_start = _init_stack_end);
@@ -247,6 +249,10 @@ SECTIONS
 
 	 We don't align here because we let the kernel determine how it wants to do this.
   */
-  PROVIDE(_heap_start = _stack_end);
+  PROVIDE(_trap_stack_start = _stack_end);
+  PROVIDE(_trap_stack_end = _trap_stack_start + 16K);
+  PROVIDE(_s_trap_stack_start = _trap_stack_end);
+  PROVIDE(_s_trap_stack_end = _s_trap_stack_start + 16K);
+  PROVIDE(_heap_start = _s_trap_stack_end);
   PROVIDE(_heap_size = _memory_end - _heap_start);
 }
